@@ -12,25 +12,25 @@ A lightweight 3D math library written in Kotlin.
 
 ```kotlin
 // Creating vectors
-val v1 = Vector3(1.0, 2.0, 3.0)
-val v2 = Vector3(4.0, 5.0, 6.0)
+val vec1 = Vector3(1.0, 2.0, 3.0)
+val vec2 = Vector3(4.0, 5.0, 6.0)
 
 // Basic arithmetic
-val sum = v1 + v2
-val diff = v1 - v2
-val scaled = v1 * 2.0
+val sum: Vector3 = vec1 + vec2
+val diff: Vector3 = vec1 - vec2
+val scaled: Vector3 = vec1 * 2.0
 
 // Vector properties
-val length = v1.length
-val normalized = v1.unit
-val isUnitVector = v1.isUnit
+val length: Double = vec1.length
+val normalized: Vector3 = vec1.unit
+val isUnitVector: Boolean = vec1.isUnit
 
 // Vector operations
-val dotProduct = v1 dot v2
-val crossProduct = v1 cross v2
-val angle = v1.getAngle(v2)  // Angle in radians
-val parallel = v1.getParallel(v2)
-val perpendicular = v1.getPerpendicular(v2)
+val dotProduct: Double = vec1 dot vec2
+val crossProduct: Vector3 = vec1 cross vec2
+val angle: Double = vec1.getAngle(vec2)  // Angle in radians
+val parallel: Vector3 = vec1.getParallel(vec2)
+val perpendicular: Vector3 = vec1.getPerpendicular(vec2)
 
 // Predefined unit vectors
 val xAxis = Vector3.unitX  // (1, 0, 0)
@@ -56,19 +56,19 @@ val mat2 = Matrix3.ofRows(
 )
 
 // Matrix properties
-val determinant = mat1.det
-val transpose = mat1.T
-val inverse = mat1.inv  // Returns null if not invertible
+val determinant: Double = mat1.det
+val transpose: Matrix3 = mat1.T
+val inverse: Matrix3? = mat1.inv  // Returns null if not invertible
 
 // Matrix operations
-val sum = mat1 + mat2
-val product = mat1 * mat2
-val transformed = mat1 * v1
+val sum: Matrix3 = mat1 + mat2
+val product: Matrix3 = mat1 * mat2
+val transformed: Vector3 = mat1 * vec1
 
 // Create transformation matrices
-val rotation = Matrix3.createRotation(Vector3.unitZ, Math.PI / 4)  // Rotate 45° around Z-axis
-val scaling = Matrix3.createScale(Vector3.unitX, 2.0)  // Scale 2x along X-axis
-val coordSystem = Matrix3.createCsys(Vector3.unitX, Vector3.unitY)
+val rotation: Matrix3? = Matrix3.createRotation(Vector3.unitZ, Math.PI / 4)  // Rotate 45° around Z-axis
+val scaling: Matrix3 = Matrix3.createScale(Vector3.unitX, 2.0)  // Scale 2x along X-axis
+val coordSystem: Matrix3 = Matrix3.createCsys(Vector3.unitX, Vector3.unitY)
 
 // Predefined matrices
 val identity = Matrix3.identity
@@ -79,27 +79,27 @@ val zero = Matrix3.zero
 
 ```kotlin
 // Creating quaternions
-val q1 = Quaternion(0.0, 0.0, 0.0, 1.0)  // Identity (no rotation)
+val quat1 = Quaternion(0.0, 0.0, 0.0, 1.0)  // Identity (no rotation)
 
 // Create from rotation axis and angle
-val axis = Vector3.unitZ
-val angle = Math.PI / 2  // 90 degrees
-val rotation = Quaternion.createRotation(axis, angle)
+val axis: Vector3 = Vector3.unitZ
+val angle: Double = Math.PI / 2  // 90 degrees
+val rotation: Quaternion? = Quaternion.createRotation(axis, angle)
 
 // Quaternion properties
-val norm = rotation!!.norm
-val normalized = rotation.unit
-val inverse = rotation.inv
-val rotationAxis = rotation.axis
-val rotationAngle = rotation.angle
+val norm: Double = rotation!!.norm
+val normalized: Quaternion = rotation.unit
+val inverse: Quaternion = rotation.inv
+val rotationAxis: Vector3 = rotation.axis
+val rotationAngle: Double = rotation.angle
 
 // Quaternion operations
-val combined = rotation * rotation  // Combine rotations
-val rotationMatrix = rotation.toMatrix()  // Convert to 3x3 matrix
+val combined: Quaternion = rotation * rotation  // Combine rotations
+val rotationMatrix1: Matrix3 = rotation.toMatrix()  // Convert to 3x3 matrix
 
 // Convert matrix to quaternion
-val mat = Matrix3.createRotation(Vector3.unitX, Math.PI / 6)
-val fromMatrix = Quaternion.createFromMatrix(mat!!)
+val rotationMatrix2: Matrix3? = Matrix3.createRotation(Vector3.unitX, Math.PI / 6)
+val fromMatrix: Quaternion? = Quaternion.createFromMatrix(rotationMatrix2!!)
 ```
 
 ### Practical Example: Rotating a Point
@@ -109,12 +109,12 @@ val fromMatrix = Quaternion.createFromMatrix(mat!!)
 val point = Vector3(1.0, 0.0, 0.0)
 
 // Rotate 90 degrees around Z-axis using matrix
-val rotationMatrix = Matrix3.createRotation(Vector3.unitZ, Math.PI / 2)
-val rotatedPoint1 = rotationMatrix!! * point
+val rotationMatrix: Matrix3? = Matrix3.createRotation(Vector3.unitZ, Math.PI / 2)
+val rotatedPoint1: Vector3 = rotationMatrix!! * point
 
 // Or rotate using quaternion
-val rotationQuat = Quaternion.createRotation(Vector3.unitZ, Math.PI / 2)
-val rotatedPoint2 = rotationQuat!!.toMatrix() * point
+val rotationQuat: Quaternion? = Quaternion.createRotation(Vector3.unitZ, Math.PI / 2)
+val rotatedPoint2: Vector3 = rotationQuat!!.toMatrix() * point
 
 // Both results should be approximately (0, 1, 0)
 println(rotatedPoint1.isClose(Vector3(0.0, 1.0, 0.0)))  // true
@@ -123,21 +123,21 @@ println(rotatedPoint1.isClose(Vector3(0.0, 1.0, 0.0)))  // true
 ### Comparison and Equality
 
 ```kotlin
-val v1 = Vector3(1.0, 2.0, 3.0)
-val v2 = Vector3(1.0, 2.0, 3.0000000001)
+val vec1 = Vector3(1.0, 2.0, 3.0)
+val vec2 = Vector3(1.0, 2.0, 3.0000000001)
 
 // Use isClose for floating-point comparison
-v1.isClose(v2)  // true (within tolerance)
+vec1.isClose(vec2)  // true (within tolerance)
 
 // Same for matrices and quaternions
-val mat1 = Matrix3.identity
-val mat2 = Matrix3.identity
+val mat1: Matrix3 = Matrix3.identity
+val mat2: Matrix3 = Matrix3.identity
 mat1.isClose(mat2)  // true
 
-val q1 = Quaternion.identity
-val q2 = Quaternion(0.0, 0.0, 0.0, 1.0)
-q1.isClose(q2)  // true
-q1.isEquivalent(q2)  // true (also checks negated quaternion)
+val quat1: Quaternion = Quaternion.identity
+val quat2: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
+quat1.isClose(quat2)  // true
+quat1.isEquivalent(quat2)  // true (also checks negated quaternion)
 ```
 
 ## Motivation
