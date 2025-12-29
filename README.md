@@ -5,23 +5,41 @@ A lightweight 3D math library written in Kotlin.
 - Focused on vector/matrix/quaternion operations for 3D simulations
 - Designed for readability and type safety rather than performance micro-optimizations
 - Intended as a reusable core for physics simulations, 3D engines, or robotics tools
+- All computations use `Double` for numerical stability and reproducibility.
+
+## Why Kotlin?
+
+- Kotlin lets me write code that looks close to the underlying math: operator overloading, data classes, and extension functions keep vector and matrix expressions legible without template gymnastics.
+- It runs anywhere a JVM runs, so I can embed the library inside existing Java services or desktop tooling without changing the deployment model.
+- Kotlin is effectively a safer, more expressive superset of Java, which means I can lean on the mature JVM ecosystem while keeping the API concise and type-safe.
 
 ## Quick Start
+
+### Installation
+
+This library is not yet published to Maven Central.
+For now, include it as a local Gradle module or build it as a jar and add it to your project.
 
 ### Vector Operations
 
 ```kotlin
+import kotlin3d.Vector3
+
 // Creating vectors
 val vec1 = Vector3(1.0, 2.0, 3.0)
 val vec2 = Vector3(4.0, 5.0, 6.0)
 
 // Basic arithmetic
 val sum: Vector3 = vec1 + vec2
+println(sum)  // Vector3(x=5.0, y=7.0, z=9.0)
+
 val diff: Vector3 = vec1 - vec2
 val scaled: Vector3 = vec1 * 2.0
 
 // Vector properties
 val length: Double = vec1.length
+println(length)  // 3.7416573867739413
+
 val normalized: Vector3 = vec1.unit
 val isUnitVector: Boolean = vec1.isUnit
 
@@ -41,6 +59,9 @@ val zAxis = Vector3.unitZ  // (0, 0, 1)
 ### Matrix Operations
 
 ```kotlin
+import kotlin3d.Matrix3
+import kotlin3d.Vector3
+
 // Creating matrices
 val mat1 = Matrix3(
     1.0, 0.0, 0.0,
@@ -63,7 +84,8 @@ val inverse: Matrix3? = mat1.inv  // Returns null if not invertible
 // Matrix operations
 val sum: Matrix3 = mat1 + mat2
 val product: Matrix3 = mat1 * mat2
-val transformed: Vector3 = mat1 * vec1
+val transformed: Vector3 = mat1 * Vector3(1.0, 2.0, 3.0)
+println(transformed)  // Vector3(x=1.0, y=2.0, z=3.0)
 
 // Create transformation matrices
 val rotation: Matrix3? = Matrix3.createRotation(Vector3.unitZ, Math.PI / 4)  // Rotate 45° around Z-axis
@@ -78,6 +100,9 @@ val zero = Matrix3.zero
 ### Quaternion Operations
 
 ```kotlin
+import kotlin3d.Quaternion
+import kotlin3d.Vector3
+
 // Creating quaternions
 val quat1 = Quaternion(0.0, 0.0, 0.0, 1.0)  // Identity (no rotation)
 
@@ -96,6 +121,7 @@ val rotationAngle: Double = rotation.angle
 // Quaternion operations
 val combined: Quaternion = rotation * rotation  // Combine rotations
 val rotationMatrix1: Matrix3 = rotation.toMatrix()  // Convert to 3x3 matrix
+println(rotationMatrix1)  // Matrix3(...)
 
 // Convert matrix to quaternion
 val rotationMatrix2: Matrix3? = Matrix3.createRotation(Vector3.unitX, Math.PI / 6)
@@ -105,6 +131,10 @@ val fromMatrix: Quaternion? = Quaternion.createFromMatrix(rotationMatrix2!!)
 ### Practical Example: Rotating a Point
 
 ```kotlin
+import kotlin3d.Vector3
+import kotlin3d.Matrix3
+import kotlin3d.Quaternion
+
 // Define a point in 3D space
 val point = Vector3(1.0, 0.0, 0.0)
 
@@ -123,6 +153,10 @@ println(rotatedPoint1.isClose(Vector3(0.0, 1.0, 0.0)))  // true
 ### Comparison and Equality
 
 ```kotlin
+import kotlin3d.Vector3
+import kotlin3d.Matrix3
+import kotlin3d.Quaternion
+
 val vec1 = Vector3(1.0, 2.0, 3.0)
 val vec2 = Vector3(1.0, 2.0, 3.0000000001)
 
@@ -150,12 +184,6 @@ This library started as a response to the pain points I kept running into with e
 - Translating equations from papers is straightforward, but validating the implementation is not - the lack of deterministic, readable code made testing painful.
 
 `kotlin3d` exists so that I can keep the math obvious, traceable, and trustworthy when building simulation tooling.
-
-## Why Kotlin?
-
-- Kotlin lets me write code that looks close to the underlying math: operator overloading, data classes, and extension functions keep vector and matrix expressions legible without template gymnastics.
-- It runs anywhere a JVM runs, so I can embed the library inside existing Java services or desktop tooling without changing the deployment model.
-- Kotlin is effectively a safer, more expressive superset of Java, which means I can lean on the mature JVM ecosystem while keeping the API concise and type-safe.
 
 ## Intended Users
 
